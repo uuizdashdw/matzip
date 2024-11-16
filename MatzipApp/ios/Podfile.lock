@@ -490,10 +490,10 @@ PODS:
   - RNCMaskedView (0.3.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNGestureHandler (2.20.2):
+  - RNGestureHandler (2.21.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNScreens (4.0.0):
+  - RNScreens (4.1.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-RCTImage
@@ -730,8 +730,8 @@ SPEC CHECKSUMS:
   React-utils: fa59c9a3375fb6f4aeb66714fd3f7f76b43a9f16
   ReactCommon: dd03c17275c200496f346af93a7b94c53f3093a4
   RNCMaskedView: a86b134da64b7eca096afca885c0fc74dfb4537f
-  RNGestureHandler: 89b845775188bcda3cd2662c46f85c3575586843
-  RNScreens: ada5ca1f48aee746f4ff45f385deb58264f53e95
+  RNGestureHandler: d1ac410ba2504c92cfc2ebda0d414d75e5a1c0ff
+  RNScreens: 7e8a62de8ee5a5ac3cba28902b41ec3df265a5bb
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

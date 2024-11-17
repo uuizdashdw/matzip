@@ -3,7 +3,7 @@ import MainDrawerNavigator from '../drawer/MainDrawerNavigator';
 
 // 사용자들이 가장 먼저 마주하게 되는 로직들
 function RootNavigator() {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return <>{isLoggedIn ? <MainDrawerNavigator /> : <AuthStackNavigator />}</>;
 }

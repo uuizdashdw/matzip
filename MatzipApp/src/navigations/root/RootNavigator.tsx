@@ -1,4 +1,4 @@
-import AuthStackNavigator from '../AuthStackNavigator';
+import AuthStackNavigator from '../stack/AuthStackNavigator';
 import MainDrawerNavigator from '../drawer/MainDrawerNavigator';
 
 // 사용자들이 가장 먼저 마주하게 되는 로직들

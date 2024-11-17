@@ -30,14 +30,14 @@ function CustomButton({
       disabled={inValid}
       style={({ pressed }) => [
         styles.container,
-
-        styles[size],
         pressed ? styles[`${variant}Pressed`] : styles[variant],
         ,
         inValid && styles.inValid,
       ]}
       {...props}>
-      <Text style={[styles.text, styles[`${variant}Text`]]}>{label}</Text>
+      <View style={styles[size]}>
+        <Text style={[styles.text, styles[`${variant}Text`]]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 3,
     justifyContent: 'center',
+    flexDirection: 'row',
   },
 
   inValid: {
@@ -65,12 +66,14 @@ const styles = StyleSheet.create({
     paddingVertical: deviceHeight > 700 ? 15 : 10,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   medium: {
     width: '50%',
     paddingVertical: deviceHeight > 700 ? 12 : 8,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
 
   text: {

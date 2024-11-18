@@ -11,17 +11,28 @@ import CustomButton from '../../components/CustomButton';
 // Util
 import { validateSignup } from '../../utils';
 
+// Custom Hook
+import useAuth from '../../hooks/queries/useAuth';
+
 function SignupScreen() {
   const signUp = useForm({
     initialValue: { email: '', password: '', passwordConfirm: '' },
     validate: validateSignup,
   });
+  const { signupMutation, loginMutation } = useAuth();
 
   const passwordRef = useRef<TextInput | null>(null);
   const passwordConfirmRef = useRef<TextInput | null>(null);
 
   const handleSubmit = () => {
-    console.log(signUp.values);
+    const { email, password } = signUp.values;
+    console.log('회원가입', { email, password });
+    signupMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => loginMutation.mutate({ email, password }),
+      },
+    );
   };
   return (
     <SafeAreaView style={styles.container}>

@@ -14,7 +14,7 @@ type RequestUser = {
 };
 
 const postSignup = async ({ email, password }: RequestUser): Promise<void> => {
-  const { data } = await axiosInstance.post('auth/signup', {
+  const { data } = await axiosInstance.post('/auth/signup', {
     email,
     password,
   });
@@ -32,7 +32,7 @@ const postLogin = async ({
   email,
   password,
 }: RequestUser): Promise<ResponseToken> => {
-  const { data } = await axiosInstance.post('auth/signin', {
+  const { data } = await axiosInstance.post('/auth/signin', {
     email,
     password,
   });
@@ -44,7 +44,7 @@ const postLogin = async ({
 type ResponseProfile = Profile & Category;
 
 const getProfile = async (): Promise<ResponseProfile> => {
-  const { data } = await axiosInstance.get('auth/me');
+  const { data } = await axiosInstance.get('/auth/me');
   return data;
 };
 
@@ -54,7 +54,7 @@ const getProfile = async (): Promise<ResponseProfile> => {
 // refreshToken 발행 성공 자체가 이미 로그인 기록이 있기 때문.
 const getAccessToken = async (): Promise<ResponseToken> => {
   const refreshToken = await getEncryptStorage('refreshToken');
-  const { data } = await axiosInstance.get('auth/refresh', {
+  const { data } = await axiosInstance.get('/auth/refresh', {
     headers: {
       Authorization: `Bearer ${refreshToken}`,
     },
@@ -65,7 +65,7 @@ const getAccessToken = async (): Promise<ResponseToken> => {
 
 // 로그아웃
 const logout = async () => {
-  await axiosInstance.post('auth/logout');
+  await axiosInstance.post('/auth/logout');
 };
 
 export { postSignup, postLogin, getProfile, getAccessToken, logout };

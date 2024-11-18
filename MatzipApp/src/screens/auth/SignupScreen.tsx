@@ -1,7 +1,11 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import InputField from '../../components/InputField';
+import React, { useRef } from 'react';
+import { SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+
+// Custom Hook
 import useForm from '../../hooks/useForm';
+
+// Components
+import InputField from '../../components/InputField';
 import CustomButton from '../../components/CustomButton';
 
 // Util
@@ -12,32 +16,49 @@ function SignupScreen() {
     initialValue: { email: '', password: '', passwordConfirm: '' },
     validate: validateSignup,
   });
+
+  const passwordRef = useRef<TextInput | null>(null);
+  const passwordConfirmRef = useRef<TextInput | null>(null);
+
+  const handleSubmit = () => {
+    console.log(signUp.values);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
         <InputField
+          autoFocus
           placeholder="이메일"
           error={signUp.errors.email}
           touched={signUp.touched.email}
           inputMode="email"
+          returnKeyType="next"
+          blurOnSubmit={false}
+          onSubmitEditing={() => passwordRef.current?.focus()}
           {...signUp.getTextInputProps('email')}
         />
         <InputField
+          ref={passwordRef}
           placeholder="비밀번호"
           error={signUp.errors.password}
           touched={signUp.touched.password}
           secureTextEntry
+          textContentType="oneTimeCode"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordConfirmRef.current?.focus()}
           {...signUp.getTextInputProps('password')}
         />
         <InputField
+          ref={passwordConfirmRef}
           placeholder="비밀번호 확인"
           error={signUp.errors.passwordConfirm}
           touched={signUp.touched.passwordConfirm}
           secureTextEntry
+          onSubmitEditing={handleSubmit}
           {...signUp.getTextInputProps('passwordConfirm')}
         />
       </View>
-      <CustomButton label="회원가입" />
+      <CustomButton label="회원가입" onPress={handleSubmit} />
     </SafeAreaView>
   );
 }

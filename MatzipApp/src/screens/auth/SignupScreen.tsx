@@ -2,17 +2,17 @@ import React, { useRef } from 'react';
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 // Custom Hook
-import useForm from '../../hooks/useForm';
+import useForm from '@/hooks/useForm';
 
 // Components
-import InputField from '../../components/InputField';
-import CustomButton from '../../components/CustomButton';
+import InputField from '@/components/InputField';
+import CustomButton from '@/components/CustomButton';
 
 // Util
-import { validateSignup } from '../../utils';
+import { validateSignup } from '@/utils';
 
 // Custom Hook
-import useAuth from '../../hooks/queries/useAuth';
+import useAuth from '@/hooks/queries/useAuth';
 
 function SignupScreen() {
   const signUp = useForm({

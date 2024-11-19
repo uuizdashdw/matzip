@@ -8,6 +8,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   getAccessToken,
   getProfile,
+  logout,
   postLogin,
   postSignup,
 } from '../../api/auth';
@@ -27,6 +28,9 @@ import { useEffect } from 'react';
 
 // API
 import queryClient from '../../api/queryClient';
+
+// Constants
+import { queryKeys, storageKeys, numbers } from '@/constants';
 
 // V5
 function useSignup(mutationOptions?: UseMutaionCustomOptions) {
@@ -50,16 +54,20 @@ function useLogin(mutationOptions?: UseMutaionCustomOptions) {
     onSuccess: ({ accessToken, refreshToken }) => {
       // setHeader 파일 들어가서 설명 참고.
       setHeader('Authorization', `Bearer ${accessToken}`);
-      setEncryptStorage('refreshToken', refreshToken);
+      setEncryptStorage(storageKeys.REFRESH_TOKEN, refreshToken);
     },
 
     onSettled: () => {
       // 첫 로그인 후 옵션에 따라 로직 훅 호출
-      queryClient.refetchQueries({ queryKey: ['auth', 'getAccessToken'] });
+      queryClient.refetchQueries({
+        queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
+      });
 
       // 로그인 한 뒤, 다시 남아있는 프로필 데이터도 변경해야할 수 있기 때문에
       // 쿼리를 stale 한 데이터로 만듦으로써 useGetProfile 훅을 한번 무효화
-      queryClient.invalidateQueries({ queryKey: ['auth', 'getProfile'] });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.AUTH, queryKeys.GET_PROFILE],
+      });
     },
     throwOnError: error => Number(error.response?.status) >= 500,
 
@@ -72,13 +80,13 @@ function useLogin(mutationOptions?: UseMutaionCustomOptions) {
 function useGetRefreshToken() {
   const { isSuccess, isError, data } = useQuery({
     // 캐싱된 데이터 식별하는 쿼리의 고유 키
-    queryKey: ['auth', 'getAccessToken'],
+    queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
     // 서버에 요청을 보내고 결과(AccessToken)를 반환
     queryFn: getAccessToken,
     // 설정된 시간동안 데이터를 가져오지 않고 캐시된 데이터 사용
-    staleTime: 1000 * 60 * 30 - 1000 * 60 * 3,
+    staleTime: numbers.ACCESS_TOKEN_REFRESH_TIME,
     // 설정된 시간 주기에 따라 리패치
-    refetchInterval: 1000 * 60 * 30 - 1000 * 60 * 3,
+    refetchInterval: numbers.ACCESS_TOKEN_REFRESH_TIME,
     // 앱을 종료하지 않고 다른 작업 후 돌아와도 자동 갱신
     refetchOnReconnect: true,
     // 앱을 백그라운드로 전환했을 때도 데이터 자동 갱신
@@ -91,7 +99,7 @@ function useGetRefreshToken() {
       // setHeader 파일 들어가서 설명 참고.
       setHeader('Authorization', `$Bearer ${data.accessToken}`);
       // RefreshToken 갱신
-      setEncryptStorage('refreshToken', data.refreshToken);
+      setEncryptStorage(storageKeys.REFRESH_TOKEN, data.refreshToken);
 
       console.log('## 리프레시 토큰 성공 :: ', isSuccess);
     }
@@ -100,7 +108,7 @@ function useGetRefreshToken() {
   useEffect(() => {
     if (isError) {
       removeHeader('Authorization');
-      removeEcryptStorage('refreshToken');
+      removeEcryptStorage(storageKeys.REFRESH_TOKEN);
 
       console.log('## 리프레시 토큰 실패 :: ', isError);
     }
@@ -112,9 +120,28 @@ function useGetRefreshToken() {
 // 로그인 후 프로필 조회
 function useGetProfile(queryOptions?: UseQueryCustomOptions) {
   return useQuery({
-    queryKey: ['auth', 'getProfile'],
+    queryKey: [queryKeys.AUTH, queryKeys.GET_PROFILE],
     queryFn: getProfile,
     ...queryOptions,
+  });
+}
+
+// 로그아웃
+function useLogout(mutationOptions?: UseMutaionCustomOptions) {
+  return useMutation({
+    mutationFn: logout,
+    // 성공 시, Header, Storage 삭제
+    onSuccess: () => {
+      removeHeader('Authorization');
+      removeEcryptStorage(storageKeys.REFRESH_TOKEN);
+    },
+
+    // auth 에 해당하는 쿼리들 무효화
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.AUTH] });
+    },
+
+    ...mutationOptions,
   });
 }
 
@@ -130,8 +157,25 @@ function useAuth() {
   // 로그인 성공 여부
   const isLogin = getProfileQuery.isSuccess;
   const loginMutation = useLogin();
+  const logoutMutation = useLogout();
 
-  return { signupMutation, loginMutation, isLogin, getProfileQuery };
+  const isLogout = logoutMutation.isSuccess;
+  useEffect(() => {
+    console.log('### 로그아웃 여부 :: ', isLogout);
+  }, [isLogout]);
+
+  // useEffect(() => {
+  //   console.log('## refreshTokenQuery 상태 :: ', refreshTokenQuery);
+  //   console.log('## getProfileQuery 상태 :: ', getProfileQuery);
+  // }, [refreshTokenQuery, getProfileQuery]);
+
+  return {
+    signupMutation,
+    loginMutation,
+    isLogin,
+    getProfileQuery,
+    logoutMutation,
+  };
 }
 
 export default useAuth;

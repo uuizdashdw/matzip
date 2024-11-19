@@ -6,6 +6,8 @@ import { Category, Profile } from '../types/domain';
 
 // Util
 import { getEncryptStorage } from '../utils';
+import { AxiosError } from 'axios';
+import { setHeader } from '@/utils/header';
 
 // 회원가입
 type RequestUser = {
@@ -44,8 +46,26 @@ const postLogin = async ({
 type ResponseProfile = Profile & Category;
 
 const getProfile = async (): Promise<ResponseProfile> => {
-  const { data } = await axiosInstance.get('/auth/me');
-  return data;
+  try {
+    const { data } = await axiosInstance.get('/auth/me');
+    return data;
+  } catch (err) {
+    // 인증 관련 오류 핸들링
+    const error = err as AxiosError;
+    if (error.response?.status === 401) {
+      try {
+        const { accessToken } = await getAccessToken();
+        setHeader('Authorization', `Bearer ${accessToken}`);
+
+        const { data } = await axiosInstance.get('/auth/me');
+        return data;
+      } catch (refreshError) {
+        // 토큰 갱신 실패 시 로그아웃 처리 또는 에러 처리
+        throw new Error('로그인 상태가 유효하지 않습니다.'); // 예시 에러 메시지
+      }
+    }
+    throw err;
+  }
 };
 
 // AccessToken 조회
@@ -65,7 +85,11 @@ const getAccessToken = async (): Promise<ResponseToken> => {
 
 // 로그아웃
 const logout = async () => {
-  await axiosInstance.post('/auth/logout');
+  try {
+    await axiosInstance.post('/auth/logout');
+  } catch (err) {
+    console.error('로그아웃 실패', err);
+  }
 };
 
 export { postSignup, postLogin, getProfile, getAccessToken, logout };

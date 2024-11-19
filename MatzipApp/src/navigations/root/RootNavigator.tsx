@@ -7,10 +7,6 @@ import { useEffect } from 'react';
 function RootNavigator() {
   const { isLogin } = useAuth();
 
-  useEffect(() => {
-    console.log('## 로그인 성공 여부 :: ', isLogin);
-  }, [isLogin]);
-
   return <>{isLogin ? <MainDrawerNavigator /> : <AuthStackNavigator />}</>;
 }
 

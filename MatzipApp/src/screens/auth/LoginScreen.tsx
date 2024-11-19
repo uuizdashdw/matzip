@@ -1,14 +1,14 @@
-import React, { useRef, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useRef } from 'react';
+import { SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
 
 // Components
-import InputField from '../../components/InputField';
-import CustomButton from '../../components/CustomButton';
+import InputField from '@/components/InputField';
+import CustomButton from '@/components/CustomButton';
 
 // Hook & Util
-import useForm from '../../hooks/useForm';
-import { validateLogin } from '../../utils';
-import useAuth from '../../hooks/queries/useAuth';
+import useForm from '@/hooks/useForm';
+import { validateLogin } from '@/utils';
+import useAuth from '@/hooks/queries/useAuth';
 
 function LoginScreen() {
   const passwordRef = useRef<TextInput | null>(null);

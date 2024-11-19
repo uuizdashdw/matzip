@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 
+#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBundleURLProvider.h>
 // #import <ReactNativeGestureHandler/ReactNativeGestureHandler.h> // 추가
 #import <React/RCTRootView.h> // 추가
@@ -10,6 +11,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey:@"AIzaSyCnA7HjfIud01nYaJEUW8vjHH-o-wBc0fk
+"];
   // [RNGestureHandlerModule initGestureHandler];
   
   // Reanimated와 제스처 핸들러 활성화
